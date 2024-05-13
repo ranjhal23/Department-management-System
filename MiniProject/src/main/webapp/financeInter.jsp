@@ -1,11 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-    <%@ page import="java.sql.*" %>
+<%@ page import="java.sql.*" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Legal Dashboard</title>
+<title>Finance Dashboard</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 <style>
     .approved {
@@ -14,13 +14,24 @@
     .declined {
         color: #dc3545 !important;
     }
+     .status-column {
+        width: 180px; /* Adjust the width as per your requirement */
+    }
+     .button-group {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+    .button-group button {
+        margin-right: 15px; /* Adjust the spacing between buttons */
+    }
 </style>
 </head>
 <body>
 <% String username = (String) session.getAttribute("username");
 if(username == null)
 {
-	response.sendRedirect("login.jsp");
+    response.sendRedirect("login.jsp");
 }
 %>
 
@@ -83,11 +94,15 @@ if(username == null)
                 <td><%=requestBy%></td>
                  <td id="approvalPerson_<%=requestId%>"><%=approvalPerson%></td> 
                 <td id="approvalDate_<%=requestId%>"><%=approvalDate%></td>
-                <td>
-                    <div class="btn-group" role="group"id="status_<%=requestId%>">
+                <td class="status-column" id="status_<%=requestId%>">
+                    <% if (status.equals("pending")) { %>
+                    <div class="btn-group" role="group">
                         <button type="button" class="btn btn-info approve-btn" onclick="updateStatus('<%=requestId%>', 'Approved', '<%=username%>')">Approve</button>
                         <button type="button" class="btn btn-danger decline-btn" onclick="updateStatus('<%=requestId%>', 'Declined', '<%=username%>')">Decline</button>
                     </div>
+                    <% } else { %>
+                    <%=status%>
+                    <% } %>
                 </td>
             </tr>
             <%

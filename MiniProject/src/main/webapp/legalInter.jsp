@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Finance Dashboard</title>
+<title>Legal Dashboard</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 <style>
     .approved {
@@ -16,33 +16,42 @@
     .declined {
         color: #dc3545 !important;
     }
+     .status-column {
+        width: 180px; /* Adjust the width as per your requirement */
+    }
+     .button-group {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+    .button-group button {
+        margin-right: 15px; /* Adjust the spacing between buttons */
+    }
 </style>
 </head>
 <body>
-<% String username = (String) session.getAttribute("username");
-if(username == null)
-{
-	response.sendRedirect("login.jsp");
+<%
+String username = (String) session.getAttribute("username");
+if(username == null) {
+    response.sendRedirect("login.jsp");
 }
 %>
 
 <div class="container">
-<div class="row">
-          <nav class="navbar navbar-inverse">
-             <div class="container-fluid">
+    <div class="row">
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
                 <div class="navbar-header">
-                  <p class="navbar-brand">Finance Dashboard </p>
+                    <p class="navbar-brand">Legal Dashboard </p>
                 </div>
                 <ul class="nav navbar-nav navbar-right">
-                  <li> <a href="logout.jsp"><span class="glyphicon glyphicon-log-out"></span></a></li>
+                    <li><a href="logout.jsp"><span class="glyphicon glyphicon-log-out"></span></a></li>
                 </ul>
-             </div>
-          </nav>
-  </div>
-  <div class="row">
-  
-  </div>
-    <h2>Finance Dashboard</h2>
+            </div>
+        </nav>
+    </div>
+    <div class="row"></div>
+    <h2>Legal Dashboard</h2>
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -57,7 +66,7 @@ if(username == null)
             </tr>
         </thead>
         <tbody>
-            <% 
+            <%
             Connection con = null;
             Statement stmt = null;
             ResultSet rs = null;
@@ -83,13 +92,17 @@ if(username == null)
                 <td><%=description%></td>
                 <td><%=requestDate%></td>
                 <td><%=requestBy%></td>
-                 <td id="approvalPerson_<%=requestId%>"><%=approvalPerson%></td> 
+                <td id="approvalPerson_<%=requestId%>"><%=approvalPerson%></td>
                 <td id="approvalDate_<%=requestId%>"><%=approvalDate%></td>
-                <td>
-                    <div class="btn-group" role="group"id="status_<%=requestId%>">
-                        <button type="button" class="btn btn-info approve-btn" onclick="updateStatus('<%=requestId%>', 'Approved', '<%=username%>')">Approve</button>
-                        <button type="button" class="btn btn-danger decline-btn" onclick="updateStatus('<%=requestId%>', 'Declined', '<%=username%>')">Decline</button>
-                    </div>
+                <td class="status-column">
+                    <% if (status.equals("pending")) { %>
+                        <div class="btn-group" role="group" id="status_<%=requestId%>">
+                            <button type="button" class="btn btn-info approve-btn" onclick="updateStatus('<%=requestId%>', 'Approved', '<%=username%>')">Approve</button>
+                            <button type="button" class="btn btn-danger decline-btn" onclick="updateStatus('<%=requestId%>', 'Declined', '<%=username%>')">Decline</button>
+                        </div>
+                    <% } else { %>
+                        <%=status%>
+                    <% } %>
                 </td>
             </tr>
             <%
@@ -109,8 +122,6 @@ if(username == null)
         </tbody>
     </table>
 </div>
-
-
 
 <script>
 function updateStatus(requestId, newStatus, username) {
